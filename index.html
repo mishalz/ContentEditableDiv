@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content Editable Div</title>
+  </head>
+  <body>
+    <div id="editableDiv" contenteditable="true">
+      Enter your text here to be replace by a link.
+    </div>
+    <button onclick="replaceWithLink()">Replace With Link.</button>
+
+    <script>
+      function replaceWithLink() {
+        const sampleTextToReplace = "google";
+        const sampleURL = "https://www.google.com";
+
+        const editableDiv = document.getElementById("editableDiv");
+
+        //Find the node from the children of the editable div, where the text appears
+        const textNode = Array.from(editableDiv.childNodes).find(
+          (node) =>
+            node.nodeType == Node.TEXT_NODE &&
+            node.nodeValue.includes(sampleTextToReplace)
+        );
+
+        if (textNode) {
+          //finding the index of the sample text within our found node
+          const startIndex = textNode.textContent.indexOf(sampleTextToReplace);
+          const endIndex = startIndex + sampleTextToReplace.length;
+
+          //creating a range and setting its start and end
+          const range = document.createRange();
+          range.setStart(textNode, startIndex);
+          range.setEnd(textNode, endIndex);
+
+          //create the link element
+          const a = document.createElement("a");
+          a.href = sampleURL;
+          a.contentEditable = "false";
+          a.textContent = sampleTextToReplace;
+
+          //delete the text and replace it with the link element
+          range.deleteContents();
+          range.insertNode(a);
+        }
+      }
+    </script>
+  </body>
+</html>
